@@ -1,0 +1,43 @@
+/* eslint-disable camelcase */
+
+exports.shorthands = undefined;
+
+exports.up = pgm => {
+  pgm.createTable('comments', {
+    id: {
+      type: 'VARCHAR(50)',
+      primaryKey: true,
+      notNull: true,
+    },
+    thread_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    owner_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    content: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    createdAt: {
+      type: 'TIMESTAMP',
+      notNull: true,
+      default: pgm.func('current_timestamp'),
+    },
+    deletedAt: {
+      type: 'TIMESTAMP',
+      notNull: false,
+      default: null,
+    },
+  });
+
+  // constraints
+  pgm.addConstraint('comments', 'fk_comments.thread_id_threads.id', 'FOREIGN KEY(thread_id) REFERENCES threads(id) ON DELETE CASCADE');
+  pgm.addConstraint('comments', 'fk_comments.owner_id_users.id', 'FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE');
+};
+
+exports.down = pgm => {
+  pgm.dropTable('comments');
+};
