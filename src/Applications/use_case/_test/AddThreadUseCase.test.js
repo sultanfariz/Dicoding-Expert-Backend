@@ -26,7 +26,7 @@ describe('AddThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
 
     /** mocking needed function */
-    mockThreadRepository.addThread = jest.fn()
+    mockThreadRepository.insertThread = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedAddedThread));
 
     /** creating use case instance */
@@ -39,9 +39,7 @@ describe('AddThreadUseCase', () => {
 
     // Assert
     expect(addedThread).toStrictEqual(expectedAddedThread);
-    // expect(mockThreadRepository.verifyAvailableUsername).toBeCalledWith(useCasePayload.username);
-    // expect(mockPasswordHash.hash).toBeCalledWith(useCasePayload.password);
-    expect(mockThreadRepository.addThread).toBeCalledWith(new AddThread({
+    expect(mockThreadRepository.insertThread).toBeCalledWith(new AddThread({
       title: useCasePayload.title,
       body: useCasePayload.body,
       owner_id: useCasePayload.owner_id,
