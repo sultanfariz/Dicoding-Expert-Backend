@@ -27,9 +27,8 @@ const AutheticationsTestHelper = {
       },
     });
 
-    const { data: { addedUser: { id: userId } } } = JSON.parse(registerRes.payload);
     const { data: { accessToken } } = JSON.parse(loginRes.payload);
-    return { userId, accessToken };
+    return accessToken;
   },
 };
 
