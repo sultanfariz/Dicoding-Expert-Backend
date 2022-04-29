@@ -140,4 +140,68 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[0].deleted_at).toBeDefined();
     });
   });
+
+  describe('getCommentsByThreadId', () => {
+    it('should return empty array when thread id is not provided', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId();
+
+      // Assert
+      expect(comments).toHaveLength(0);
+    });
+
+    it('should return empty array when thread id is not valid', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId('invalid-id');
+
+      // Assert
+      expect(comments).toHaveLength(0);
+    });
+
+    it('should return comments correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+
+      await ThreadsTableTestHelper.insertThread({
+        id: 'thread-123',
+        title: 'Dicoding Indonesia',
+        body: 'All About Dicoding Indonesia here',
+        owner_id: 'user-123',
+      });
+
+      await CommentsTableTestHelper.insertComment({
+        id: 'comment-123',
+        content: 'dicoding',
+        owner_id: 'user-123',
+        thread_id: 'thread-123',
+      });
+
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
+
+      // Assert
+      expect(comments).toHaveLength(1);
+      expect(comments[0].id).toBe('comment-123');
+      expect(comments[0].content).toBe('dicoding');
+      expect(comments[0].owner_id).toBe('user-123');
+      expect(comments[0].thread_id).toBe('thread-123');
+      expect(comments[0].created_at).toBeDefined();
+    });
+  });
 });
