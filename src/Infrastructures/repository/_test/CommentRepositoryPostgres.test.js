@@ -58,6 +58,12 @@ describe('CommentRepositoryPostgres', () => {
         password: 'secret',
         fullname: 'Dicoding Indonesia',
       });
+      await ThreadsTableTestHelper.insertThread({
+        id: 'thread-123',
+        title: 'Dicoding Indonesia',
+        body: 'All About Dicoding Indonesia here',
+        owner_id: 'user-123',
+      });
       const addComment = new AddComment({
         content: 'dicoding',
         thread_id: 'thread-123',
@@ -66,14 +72,14 @@ describe('CommentRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
-      // Action
+      // // Action
       const addedComment = await commentRepositoryPostgres.insertComment(addComment);
 
-      // Assert
+      // // Assert
       expect(addedComment).toStrictEqual(new AddedComment({
         id: 'comment-123',
-        title: 'title',
-        body: 'body',
+        content: 'dicoding',
+        thread_id: 'thread-123',
         owner_id: 'user-123',
         created_at: expect.any(Object),
       }));

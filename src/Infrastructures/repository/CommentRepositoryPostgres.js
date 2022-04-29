@@ -13,16 +13,12 @@ class CommentRepositoryPostgres extends CommentRepository {
     const { content, owner_id, thread_id } = addComment;
     const id = `comment-${this._idGenerator()}`;
 
-    console.log("============================MASUK SINI 1============================");
-    console.log("addComment: ", addComment);
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4) RETURNING id, thread_id, owner_id, content, created_at',
       values: [id, thread_id, owner_id, content],
     };
 
     const result = await this._pool.query(query);
-    console.log("result", result);
-    console.log("============================MASUK SINI 2============================");
 
     return new AddedComment({ ...result.rows[0] });
   }

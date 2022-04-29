@@ -13,11 +13,11 @@ class AddedComment {
   }
 
   _verifyPayload({ id, thread_id, owner_id, content, created_at, deleted_at }) {
-    if (!id || !owner_id || !thread_id || !content || !created_at || !deleted_at) {
+    if (!id || !owner_id || !thread_id || !content || !created_at) {
       throw new Error('ADDED_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
-    if (typeof id !== 'string' || typeof thread_id !== 'string' || typeof owner_id !== 'string' || typeof content !== 'string' || typeof created_at !== 'object' || typeof deleted_at !== 'object') {
+    if (typeof id !== 'string' || typeof thread_id !== 'string' || typeof owner_id !== 'string' || typeof content !== 'string' || typeof created_at !== 'object') {
       throw new Error('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
