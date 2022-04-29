@@ -72,10 +72,10 @@ describe('CommentRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123'; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
-      // // Action
+      // Action
       const addedComment = await commentRepositoryPostgres.insertComment(addComment);
 
-      // // Assert
+      // Assert
       expect(addedComment).toStrictEqual(new AddedComment({
         id: 'comment-123',
         content: 'dicoding',

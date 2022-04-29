@@ -95,5 +95,30 @@ describe('/comments endpoint', () => {
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('tidak dapat membuat comment baru karena tipe data tidak sesuai');
     });
+
+    it('should response 404 when thread not found', async () => {
+      // Arrange
+      const requestPayload = {
+        content: 'content',
+      };
+      const server = await createServer(container);
+      const accessToken = await AuthenticationsTestHelper.getAccessToken(server);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/0/comments`,
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('thread tidak ditemukan');
+    });
   });
 });
