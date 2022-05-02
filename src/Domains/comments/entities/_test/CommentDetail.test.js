@@ -50,8 +50,8 @@ describe('a CommentDetail entities', () => {
     const payload = {
       id: 'comment-123',
       username: 'username',
-      created_at: new Date('2020-01-01T00:00:00.000Z'),
       content: 'content',
+      created_at: new Date('2020-01-01T00:00:00.000Z'),
       deleted_at: new Date('2020-01-01T00:00:00.000Z'),
     };
 

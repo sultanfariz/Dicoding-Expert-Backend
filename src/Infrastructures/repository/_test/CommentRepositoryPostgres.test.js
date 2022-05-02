@@ -184,7 +184,7 @@ describe('CommentRepositoryPostgres', () => {
 
       await CommentsTableTestHelper.insertComment({
         id: 'comment-123',
-        content: 'dicoding',
+        content: 'dicoding comment',
         owner_id: 'user-123',
         thread_id: 'thread-123',
       });
@@ -198,10 +198,9 @@ describe('CommentRepositoryPostgres', () => {
       // Assert
       expect(comments).toHaveLength(1);
       expect(comments[0].id).toBe('comment-123');
-      expect(comments[0].content).toBe('dicoding');
-      expect(comments[0].owner_id).toBe('user-123');
-      expect(comments[0].thread_id).toBe('thread-123');
-      expect(comments[0].created_at).toBeDefined();
+      expect(comments[0].content).toBe('dicoding comment');
+      expect(comments[0].username).toBe('dicoding');
+      expect(comments[0].date).toBeDefined();
     });
   });
 });

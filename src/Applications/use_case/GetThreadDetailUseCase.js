@@ -11,13 +11,7 @@ class GetThreadDetailUseCase {
 
     // sort comments by created_at
     comments.sort((a, b) => {
-      if (a.created_at < b.created_at) {
-        return -1;
-      }
-      if (a.created_at > b.created_at) {
-        return 1;
-      }
-      return 0;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
     thread.comments = comments;
