@@ -21,7 +21,7 @@ describe('a ThreadDetail entities', () => {
       title: 123,
       body: 123,
       username: [123],
-      date: 123,
+      created_at: 123,
       comments: [],
     };
 
@@ -35,7 +35,7 @@ describe('a ThreadDetail entities', () => {
       id: 'thread-123',
       title: 'title',
       body: 'body',
-      date: '2020-01-01T00:00:00.000Z',
+      created_at: new Date('2020-01-01T00:00:00.000Z'),
       username: 'username',
       comments: [],
     };
@@ -45,9 +45,9 @@ describe('a ThreadDetail entities', () => {
 
     // Assert
     expect(threadDetail.id).toEqual(payload.id);
-    expect(threadDetail.owner_id).toEqual(payload.owner_id);
+    expect(threadDetail.username).toEqual(payload.username);
     expect(threadDetail.title).toEqual(payload.title);
     expect(threadDetail.body).toEqual(payload.body);
-    expect(threadDetail.created_at).toEqual(payload.created_at);
+    expect(threadDetail.date).toEqual(payload.created_at);
   });
 });
