@@ -89,8 +89,6 @@ class CommentRepositoryPostgres extends CommentRepository {
       return [];
     }
 
-    console.log("result.rows", result.rows);
-
     return result.rows.map(row => {
       return new CommentDetail({ ...row });
     });

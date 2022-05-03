@@ -12,7 +12,6 @@ const ThreadsTestHelper = {
     });
 
     const responseJson = JSON.parse(response.payload);
-    console.log(responseJson);
     return responseJson.data.addedThread;
   },
 

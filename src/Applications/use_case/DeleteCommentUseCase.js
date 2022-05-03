@@ -20,7 +20,6 @@ class DeleteCommentUseCase {
 
     // check user authorization
     const comment = await this._commentRepository.getCommentById(useCasePayload.comment_id);
-    if (!comment) throw new NotFoundError('comment not found');
 
     const username = await this._userRepository.verifyUsernameById(useCasePayload.owner_id);
     if (comment.username !== username) throw new AuthorizationError('user not authorized');
