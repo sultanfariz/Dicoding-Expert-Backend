@@ -1,5 +1,6 @@
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
 const pool = require('../../database/postgres/pool');
@@ -141,6 +142,30 @@ describe('UserRepositoryPostgres', () => {
 
       // Action
       const username = await userRepositoryPostgres.getUsernameById('user-123');
+
+      // Assert
+      expect(username).toEqual('dicoding');
+    });
+  });
+
+  describe('verifyUsernameById', () => {
+    it('should throw AuthorizationError when user not found', async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(userRepositoryPostgres.verifyUsernameById('user-123'))
+        .rejects
+        .toThrowError(AuthorizationError);
+    });
+
+    it('should return username correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action
+      const username = await userRepositoryPostgres.verifyUsernameById('user-123');
 
       // Assert
       expect(username).toEqual('dicoding');
