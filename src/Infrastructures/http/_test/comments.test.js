@@ -3,9 +3,10 @@ const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelp
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTestHelper = require('../../../../tests/AuthenticationsTestHelper');
+const ThreadsTestHelper = require('../../../../tests/ThreadsTestHelper');
+const CommentsTestHelper = require('../../../../tests/CommentsTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
-const ThreadsTestHelper = require('../../../../tests/ThreadsTestHelper');
 
 describe('/comments endpoint', () => {
   afterAll(async () => {
@@ -119,6 +120,52 @@ describe('/comments endpoint', () => {
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('thread tidak ditemukan');
+    });
+  });
+
+  describe('when DELETE /comments/:id', () => {
+    it('should response 200 and deleted comment', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const accessToken = await AuthenticationsTestHelper.getAccessToken(server);
+      const threadId = await ThreadsTestHelper.getThreadId(server, accessToken);
+      const commentId = await CommentsTestHelper.getCommentId(server, accessToken, threadId);
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${commentId}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+    });
+
+    it('should response 404 when comment not found', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const accessToken = await AuthenticationsTestHelper.getAccessToken(server);
+      const threadId = await ThreadsTestHelper.getThreadId(server, accessToken);
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/0`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('comment tidak ditemukan');
     });
   });
 });
