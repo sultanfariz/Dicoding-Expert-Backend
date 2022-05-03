@@ -1,7 +1,21 @@
 /* istanbul ignore file */
-const AuthenticationsTestHelper = require('./AuthenticationsTestHelper');
 
 const ThreadsTestHelper = {
+  async createThread(server, requestPayload, accessToken) {
+    const response = await server.inject({
+      method: 'POST',
+      url: '/threads',
+      payload: requestPayload,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const responseJson = JSON.parse(response.payload);
+    console.log(responseJson);
+    return responseJson.data.addedThread;
+  },
+
   async getThreadId(server, accessToken) {
     /** add thread */
     const insertThreadRes = await server.inject({

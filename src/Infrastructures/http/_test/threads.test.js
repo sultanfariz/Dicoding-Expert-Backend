@@ -4,6 +4,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthenticationsTestHelper = require('../../../../tests/AuthenticationsTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
+const ThreadsTestHelper = require('../../../../tests/ThreadsTestHelper');
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -92,6 +93,51 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena tipe data tidak sesuai');
+    });
+  });
+
+  describe('when GET /threads/:id', () => {
+    it('should response 200 and thread detail', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const accessToken = await AuthenticationsTestHelper.getAccessToken(server);
+      const thread = await ThreadsTestHelper.createThread(server, { title: 'title', body: 'body' }, accessToken);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${thread.id}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+    });
+
+    it('should response 404 when thread not found', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const accessToken = await AuthenticationsTestHelper.getAccessToken(server);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/1',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('thread tidak ditemukan');
     });
   });
 });
