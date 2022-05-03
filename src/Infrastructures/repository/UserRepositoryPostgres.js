@@ -1,4 +1,5 @@
 const InvariantError = require('../../Commons/exceptions/InvariantError');
+const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const RegisteredUser = require('../../Domains/users/entities/RegisteredUser');
 const UserRepository = require('../../Domains/users/UserRepository');
 
@@ -78,6 +79,23 @@ class UserRepositoryPostgres extends UserRepository {
 
     if (!result.rowCount) {
       throw new InvariantError('user tidak ditemukan');
+    }
+
+    const { username } = result.rows[0];
+
+    return username;
+  }
+
+  async verifyUsernameById(id) {
+    const query = {
+      text: 'SELECT username FROM users WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new AuthorizationError('user tidak ditemukan');
     }
 
     const { username } = result.rows[0];
