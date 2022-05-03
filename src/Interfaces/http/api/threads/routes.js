@@ -9,6 +9,15 @@ const routes = (handler) => ([
       description: 'Create a new thread',
     },
   },
+  {
+    method: 'GET',
+    path: '/threads/{id}',
+    handler: handler.getThreadDetailHandler,
+    options: {
+      tags: ['api', 'threads'],
+      description: 'Get thread detail',
+    }
+  },
 ]);
 
 module.exports = routes;

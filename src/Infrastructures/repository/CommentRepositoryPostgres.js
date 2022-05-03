@@ -25,6 +25,10 @@ class CommentRepositoryPostgres extends CommentRepository {
   }
 
   async deleteComment(id) {
+    if (!id) {
+      throw new InvariantError('id is required');
+    }
+
     const query = {
       text: 'UPDATE comments SET deleted_at = NOW() WHERE id = $1',
       values: [id],
@@ -38,9 +42,7 @@ class CommentRepositoryPostgres extends CommentRepository {
   }
 
   async getCommentsByThreadId(thread_id) {
-    if (!thread_id) {
-      return [];
-    }
+    if (!thread_id) return [];
 
     const query = {
       text: `SELECT 
@@ -61,6 +63,8 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rowCount) {
       return [];
     }
+
+    console.log("result.rows", result.rows);
 
     return result.rows.map(row => {
       return new CommentDetail({ ...row });
