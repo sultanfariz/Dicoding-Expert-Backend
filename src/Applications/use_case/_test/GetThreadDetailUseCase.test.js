@@ -90,16 +90,16 @@ describe('GetThreadDetailUseCase', () => {
       username: 'dicoding',
       comments: [
         new CommentDetail({
-          id: 'comment-124',
-          content: 'content2',
-          created_at: new Date("2021-01-02T00:00:00.000Z"),
-          username: 'username2',
-        }),
-        new CommentDetail({
           id: 'comment-123',
           content: 'content1',
           created_at: new Date("2020-01-04T00:00:00.000Z"),
           username: 'username1',
+        }),
+        new CommentDetail({
+          id: 'comment-124',
+          content: 'content2',
+          created_at: new Date("2021-01-02T00:00:00.000Z"),
+          username: 'username2',
         }),
       ],
     });

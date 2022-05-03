@@ -2,6 +2,7 @@ const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelp
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
@@ -136,7 +137,7 @@ describe('CommentRepositoryPostgres', () => {
       const action = commentRepositoryPostgres.getCommentById('comment-123');
 
       // Assert
-      await expect(action).rejects.toThrow(InvariantError);
+      await expect(action).rejects.toThrow(NotFoundError);
     });
   });
 

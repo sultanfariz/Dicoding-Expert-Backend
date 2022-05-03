@@ -1,4 +1,5 @@
 const InvariantError = require('../../Commons/exceptions/InvariantError');
+const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 const CommentDetail = require('../../Domains/comments/entities/CommentDetail');
@@ -42,7 +43,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this._pool.query(query);
 
     if (result.rows.length === 0) {
-      throw new InvariantError('comment tidak ditemukan');
+      throw new NotFoundError('comment tidak ditemukan');
     }
 
     return new CommentDetail({ ...result.rows[0] });
