@@ -24,6 +24,30 @@ class CommentRepositoryPostgres extends CommentRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
+  async getCommentById(id) {
+    const query = {
+      text: `SELECT 
+              comments.id,
+              comments.thread_id,
+              comments.content,
+              comments.created_at,
+              comments.deleted_at,
+              users.username 
+            FROM comments
+            INNER JOIN users ON comments.owner_id = users.id
+            WHERE comments.id = $1`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows.length === 0) {
+      throw new InvariantError('comment tidak ditemukan');
+    }
+
+    return new CommentDetail({ ...result.rows[0] });
+  }
+
   async deleteComment(id) {
     if (!id) {
       throw new InvariantError('id is required');
@@ -46,15 +70,15 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     const query = {
       text: `SELECT 
-        comments.id,
-        comments.thread_id,
-        comments.content,
-        comments.created_at,
-        comments.deleted_at,
-        users.username
-      FROM comments
-      INNER JOIN users ON comments.owner_id = users.id
-      WHERE comments.thread_id = $1`,
+              comments.id,
+              comments.thread_id,
+              comments.content,
+              comments.created_at,
+              comments.deleted_at,
+              users.username
+            FROM comments
+            INNER JOIN users ON comments.owner_id = users.id
+            WHERE comments.thread_id = $1`,
       values: [thread_id],
     };
 
