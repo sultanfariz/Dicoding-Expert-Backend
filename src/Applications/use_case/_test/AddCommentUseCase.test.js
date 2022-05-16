@@ -39,8 +39,7 @@ describe('AddCommentUseCase', () => {
         created_at: expect.any(String),
       });
     });
-    mockCommentRepository.insertComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAddedComment));
+    mockCommentRepository.insertComment = jest.fn(() => Promise.resolve(expectedAddedComment));
 
     /** creating use case instance */
     const getCommentUseCase = new AddCommentUseCase({

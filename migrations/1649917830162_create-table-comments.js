@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = pgm => {
   pgm.createTable('comments', {
     id: {
@@ -12,10 +10,12 @@ exports.up = pgm => {
     thread_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'threads',
     },
     owner_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'users',
     },
     content: {
       type: 'TEXT',
@@ -32,10 +32,6 @@ exports.up = pgm => {
       default: null,
     },
   });
-
-  // constraints
-  pgm.addConstraint('comments', 'fk_comments.thread_id_threads.id', 'FOREIGN KEY(thread_id) REFERENCES threads(id) ON DELETE CASCADE');
-  pgm.addConstraint('comments', 'fk_comments.owner_id_users.id', 'FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE');
 };
 
 exports.down = pgm => {
