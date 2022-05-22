@@ -1,9 +1,11 @@
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const AddReplyUseCase = require('../AddReplyUseCase');
 const AddReply = require('../../../Domains/replies/entities/AddReply');
 const AddedReply = require('../../../Domains/replies/entities/AddedReply');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
+const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 
 describe('AddReplyUseCase', () => {
   /**
@@ -15,6 +17,7 @@ describe('AddReplyUseCase', () => {
       content: 'content',
       owner_id: 'user-123',
       comment_id: 'comment-123',
+      thread_id: 'thread-123',
     };
     const expectedAddedReply = new AddedReply({
       id: 'reply-123',
@@ -28,8 +31,18 @@ describe('AddReplyUseCase', () => {
     /** creating dependency of use case */
     const mockReplyRepository = new ReplyRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockThreadRepository = new ThreadRepository();
 
     /** mocking needed function */
+    mockThreadRepository.getThreadById = jest.fn(async () => {
+      return new AddedThread({
+        id: 'thread-123',
+        title: 'title',
+        body: 'body',
+        owner_id: 'user-123',
+        created_at: expect.any(String),
+      });
+    });
     mockCommentRepository.getCommentById = jest.fn(async () => {
       return new AddedComment({
         id: 'comment-123',
@@ -45,6 +58,7 @@ describe('AddReplyUseCase', () => {
     const getReplyUseCase = new AddReplyUseCase({
       replyRepository: mockReplyRepository,
       commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
     });
 
     // Action
