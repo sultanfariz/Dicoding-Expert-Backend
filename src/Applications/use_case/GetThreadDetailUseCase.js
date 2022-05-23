@@ -1,8 +1,9 @@
 class GetThreadDetailUseCase {
-  constructor({ threadRepository, userRepository, commentRepository }) {
-    this._threadRepository = threadRepository;
+  constructor({ userRepository, threadRepository, commentRepository, replyRepository }) {
     this._userRepository = userRepository;
+    this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
+    this._replyRepository = replyRepository;
   }
 
   async execute(useCasePayload) {
@@ -13,6 +14,16 @@ class GetThreadDetailUseCase {
     comments.sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
+
+    // get comment's replies
+    for (let i = 0; i < comments.length; i++) {
+      const replies = await this._replyRepository.getRepliesByCommentId(comments[i].id);
+      // sort replies by created_at
+      replies.sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+      comments[i].replies = replies;
+    }
 
     thread.comments = comments;
 
