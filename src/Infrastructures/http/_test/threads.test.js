@@ -16,6 +16,10 @@ describe('/threads endpoint', () => {
     await UsersTableTestHelper.cleanTable();
   });
 
+  beforeEach(async () => {
+    jest.setTimeout(60000);
+  });
+
   describe('when POST /threads', () => {
     it('should response 201 and persisted thread', async () => {
       // Arrange

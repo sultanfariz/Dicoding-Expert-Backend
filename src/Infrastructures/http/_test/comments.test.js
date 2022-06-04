@@ -19,6 +19,10 @@ describe('/comments endpoint', () => {
     await UsersTableTestHelper.cleanTable();
   });
 
+  beforeEach(async () => {
+    jest.setTimeout(60000);
+  });
+
   describe('when POST /comments', () => {
     it('should response 201 and persisted comment', async () => {
       // Arrange
