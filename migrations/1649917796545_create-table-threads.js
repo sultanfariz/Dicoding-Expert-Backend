@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = pgm => {
   pgm.createTable('threads', {
     id: {
@@ -12,6 +10,7 @@ exports.up = pgm => {
     owner_id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: 'users',
     },
     title: {
       type: 'TEXT',
@@ -27,9 +26,6 @@ exports.up = pgm => {
       default: pgm.func('current_timestamp'),
     },
   });
-
-  // constraints
-  pgm.addConstraint('threads', 'fk_threads.owner_id_users.id', 'FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE');
 };
 
 exports.down = pgm => {
