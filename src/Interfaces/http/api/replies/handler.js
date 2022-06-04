@@ -1,12 +1,12 @@
 const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
-// const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
+const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
 
 class RepliesHandler {
   constructor(container) {
     this._container = container;
 
     this.postReplyHandler = this.postReplyHandler.bind(this);
-    // this.deleteReplyHandler = this.deleteReplyHandler.bind(this);
+    this.deleteReplyHandler = this.deleteReplyHandler.bind(this);
   }
 
   async postReplyHandler(request, h) {
@@ -32,18 +32,18 @@ class RepliesHandler {
     return response;
   }
 
-  // async deleteReplyHandler(request, h) {
-  //   const { threadId: thread_id, commentId: comment_id } = request.params;
-  //   const { id: owner_id } = request.auth.credentials;
-  //   const deleteReplyUseCase = this._container.getInstance(DeleteReplyUseCase.name);
-  //   await deleteReplyUseCase.execute({ thread_id, comment_id, owner_id });
+  async deleteReplyHandler(request, h) {
+    const { threadId: thread_id, commentId: comment_id, replyId: reply_id } = request.params;
+    const { id: owner_id } = request.auth.credentials;
+    const deleteReplyUseCase = this._container.getInstance(DeleteReplyUseCase.name);
+    await deleteReplyUseCase.execute({ thread_id, comment_id, reply_id, owner_id });
 
-  //   const response = h.response({
-  //     status: 'success',
-  //   });
-  //   response.code(200);
-  //   return response;
-  // }
+    const response = h.response({
+      status: 'success',
+    });
+    response.code(200);
+    return response;
+  }
 }
 
 module.exports = RepliesHandler;
