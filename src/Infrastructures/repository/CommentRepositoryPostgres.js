@@ -25,6 +25,25 @@ class CommentRepositoryPostgres extends CommentRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
+  async updateCommentLikeCountById(id, likeCount) {
+    if (likeCount < 0) {
+      throw new InvariantError('like count must be greater than or equal to 0');
+    }
+
+    const query = {
+      text: 'UPDATE comments SET like_count = $1 WHERE id = $2',
+      values: [likeCount, id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new NotFoundError(`Comment with id ${id} not found`);
+    }
+
+    return result.rowCount;
+  }
+
   async getCommentById(id) {
     const query = {
       text: `SELECT 
@@ -33,6 +52,7 @@ class CommentRepositoryPostgres extends CommentRepository {
               comments.content,
               comments.created_at,
               comments.deleted_at,
+              comments.like_count,
               users.username 
             FROM comments
             INNER JOIN users ON comments.owner_id = users.id
@@ -76,6 +96,7 @@ class CommentRepositoryPostgres extends CommentRepository {
               comments.content,
               comments.created_at,
               comments.deleted_at,
+              comments.like_count,
               users.username
             FROM comments
             INNER JOIN users ON comments.owner_id = users.id
