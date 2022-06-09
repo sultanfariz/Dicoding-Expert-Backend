@@ -13,12 +13,6 @@ class CommentDetail {
   }
 
   _verifyPayload({ id, username, content, created_at, like_count }) {
-    // console.log("==============================================");
-    // console.log(id, username, content, created_at, like_count);
-    // console.log("like_count === undefined", like_count === undefined);
-    // console.log("typeof like_count", typeof like_count);
-    // console.log("==============================================");
-    // if (!id || !username || !content || !created_at || like_count === undefined) {
     if (!id || !username || !content || !created_at) {
       throw new Error('COMMENT_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
     }

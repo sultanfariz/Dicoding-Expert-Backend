@@ -22,7 +22,7 @@ describe('LikeRepositoryPostgres', () => {
   });
 
   describe('likeComment function', () => {
-    it('should persist add comment and return added comment correctly', async () => {
+    it('should persist add like correctly', async () => {
       // Arrange
       await UsersTableTestHelper.addUser({
         id: 'user-123',
@@ -40,6 +40,7 @@ describe('LikeRepositoryPostgres', () => {
         id: 'comment-123',
         content: 'Hello World',
         owner_id: 'user-123',
+        thread_id: 'thread-123',
       });
       const giveLike = new GiveLike({
         owner_id: 'user-123',
@@ -54,17 +55,28 @@ describe('LikeRepositoryPostgres', () => {
       // Assert
       const like = await LikesTableTestHelper.findLikeById('like-123');
       expect(like).toHaveLength(1);
+      expect(like[0].owner_id).toBe('user-123');
+      expect(like[0].comment_id).toBe('comment-123');
     });
   });
 
-  describe('unlikeComment', () => {
-    it('should throw InvariantError when like id is not valid', async () => {
+  describe('unlikeComment function', () => {
+    it('should throw InvariantError when like id is empty', async () => {
       // Arrange
       const fakeIdGenerator = () => '123'; // stub!
       const likeRepositoryPostgres = new LikeRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action and Assert
-      await expect(likeRepositoryPostgres.unlikeComment('invalid-id')).rejects.toThrowError(InvariantError);
+      await expect(likeRepositoryPostgres.unlikeComment()).rejects.toThrowError(InvariantError);
+    });
+
+    it('should throw NotFoundError when like is not found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123'; // stub!
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action and Assert
+      await expect(likeRepositoryPostgres.unlikeComment('like-124')).rejects.toThrowError(NotFoundError);
     });
 
     it('should delete like when like id is valid', async () => {
