@@ -39,6 +39,29 @@ class LikeRepositoryPostgres extends LikeRepository {
       throw new NotFoundError('reply not found');
     }
   }
+
+  async getLikeByCommentIdAndOwnerId(commentId, ownerId) {
+    if (!commentId) {
+      throw new InvariantError('commentId is required');
+    }
+
+    if (!ownerId) {
+      throw new InvariantError('ownerId is required');
+    }
+
+    const query = {
+      text: 'SELECT * FROM likes WHERE comment_id = $1 AND owner_id = $2',
+      values: [commentId, ownerId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      return null;
+    }
+
+    return result.rows[0];
+  }
 }
 
 module.exports = LikeRepositoryPostgres;
