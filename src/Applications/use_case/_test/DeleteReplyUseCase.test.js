@@ -35,7 +35,37 @@ describe('DeleteReplyUseCase', () => {
     await expect(result).rejects.toThrowError('thread not found');
   });
 
-  it('should throw error when reply is not provided', async () => {
+  it('should throw error when comment_id is not provided', async () => {
+    const useCasePayload = {
+      reply_id: 'reply-123',
+      thread_id: 'thread-123',
+      user_id: 'user-123',
+    };
+    const mockThreadRepository = new ThreadRepository();
+    mockThreadRepository.getThreadById = jest.fn().mockReturnValue(Promise.resolve({}));
+    const mockCommentRepository = new CommentRepository();
+    mockCommentRepository.getCommentById = jest.fn().mockReturnValue(Promise.resolve(null));
+    const mockReplyRepository = new ReplyRepository();
+    mockReplyRepository.deleteReply = jest.fn();
+    const mockUserRepository = new UserRepository();
+    mockUserRepository.getUsernameById = jest.fn().mockReturnValue(Promise.resolve('username'));
+
+    const deleteReplyUseCase = new DeleteReplyUseCase({
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
+      userRepository: mockUserRepository,
+    });
+
+    // Act
+    const result = deleteReplyUseCase.execute(useCasePayload);
+
+    // Assert
+    expect(mockReplyRepository.deleteReply).not.toHaveBeenCalled();
+    await expect(result).rejects.toThrowError('comment not found');
+  });
+
+  it('should throw error when reply_id is not provided', async () => {
     const useCasePayload = {
       comment_id: 'comment-123',
       thread_id: 'thread-123',
