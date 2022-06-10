@@ -55,6 +55,10 @@ describe('LikeCommentUseCase', () => {
       Promise.resolve(1);
     });
     mockLikeRepository.likeComment = jest.fn(() => Promise.resolve(expectedGiveLike));
+    mockLikeRepository.unlikeComment = jest.fn(() => Promise.resolve());
+    mockLikeRepository.getLikeByCommentIdAndOwnerId = jest.fn(async () => {
+      return null;
+    });
 
     /** creating use case instance */
     const likeCommentUseCase = new LikeCommentUseCase({
@@ -72,5 +76,70 @@ describe('LikeCommentUseCase', () => {
       comment_id: useCasePayload.comment_id,
     }));
     expect(mockCommentRepository.updateCommentLikeCountById).toBeCalledWith(useCasePayload.comment_id, 1);
+  });
+
+  it('should orchestrating the unlike comment action correctly', async () => {
+    // Arrange
+    const useCasePayload = {
+      content: 'content',
+      owner_id: 'user-123',
+      comment_id: 'comment-123',
+      thread_id: 'thread-123',
+    };
+
+    /** creating dependency of use case */
+    const mockLikeRepository = new LikeRepository();
+    const mockCommentRepository = new CommentRepository();
+    const mockThreadRepository = new ThreadRepository();
+
+    /** mocking needed function */
+    mockThreadRepository.getThreadById = jest.fn(async () => {
+      return new AddedThread({
+        id: 'thread-123',
+        title: 'title',
+        body: 'body',
+        owner_id: 'user-123',
+        created_at: expect.any(String),
+      });
+    });
+
+    mockCommentRepository.getCommentById = jest.fn(async () => {
+      return new CommentDetail({
+        id: 'comment-123',
+        content: 'content',
+        thread_id: 'thread-123',
+        username: 'username',
+        like_count: 1,
+        created_at: expect.any(String),
+      });
+    });
+    mockCommentRepository.updateCommentLikeCountById = jest.fn(async () => {
+      Promise.resolve(0);
+    });
+
+    mockLikeRepository.getLikeByCommentIdAndOwnerId = jest.fn(async () => {
+      return {
+        id: 'like-123',
+        comment_id: useCasePayload.comment_id,
+        owner_id: useCasePayload.owner_id,
+        created_at: expect.any(String),
+        deleted_at: null,
+      };
+    });
+    mockLikeRepository.unlikeComment = jest.fn(() => Promise.resolve());
+
+    /** creating use case instance */
+    const likeCommentUseCase = new LikeCommentUseCase({
+      likeRepository: mockLikeRepository,
+      commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
+    });
+
+    // Action
+    await likeCommentUseCase.execute(useCasePayload);
+
+    // Assert
+    expect(mockLikeRepository.unlikeComment).toBeCalledWith('like-123');
+    expect(mockCommentRepository.updateCommentLikeCountById).toBeCalledWith(useCasePayload.comment_id, 0);
   });
 });
