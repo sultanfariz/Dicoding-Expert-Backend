@@ -20,6 +20,7 @@ describe('a CommentDetail entities', () => {
       username: 123,
       created_at: 123,
       content: [123],
+      like_count: '123',
     };
 
     // Action and Assert
@@ -33,6 +34,7 @@ describe('a CommentDetail entities', () => {
       username: 'username',
       created_at: new Date('2020-01-01T00:00:00.000Z'),
       content: 'content',
+      like_count: 0,
     };
 
     // Action
@@ -51,6 +53,7 @@ describe('a CommentDetail entities', () => {
       id: 'comment-123',
       username: 'username',
       content: 'content',
+      like_count: 0,
       created_at: new Date('2020-01-01T00:00:00.000Z'),
       deleted_at: new Date('2020-01-01T00:00:00.000Z'),
     };

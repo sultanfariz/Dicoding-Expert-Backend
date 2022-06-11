@@ -88,6 +88,77 @@ describe('CommentRepositoryPostgres', () => {
     });
   });
 
+  describe('updateCommentLikeCountById function', () => {
+    it('should update comment like count correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      await ThreadsTableTestHelper.insertThread({
+        id: 'thread-123',
+        title: 'Dicoding Indonesia',
+        body: 'All About Dicoding Indonesia here',
+        owner_id: 'user-123',
+      });
+      await CommentsTableTestHelper.insertComment({
+        id: 'comment-123',
+        thread_id: 'thread-123',
+        owner_id: 'user-123',
+        content: 'dicoding',
+        like_count: 0,
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      await commentRepositoryPostgres.updateCommentLikeCountById('comment-123', 1);
+
+      // Assert
+      const comments = await CommentsTableTestHelper.findCommentsById('comment-123');
+      expect(comments[0].like_count).toBe(1);
+    });
+
+    it('should throw error when comment not found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action and Assert
+      await expect(commentRepositoryPostgres.updateCommentLikeCountById('comment-123', 1)).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should throw error when like count is invalid', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+      await ThreadsTableTestHelper.insertThread({
+        id: 'thread-123',
+        title: 'Dicoding Indonesia',
+        body: 'All About Dicoding Indonesia here',
+        owner_id: 'user-123',
+      });
+      await CommentsTableTestHelper.insertComment({
+        id: 'comment-123',
+        thread_id: 'thread-123',
+        owner_id: 'user-123',
+        content: 'dicoding',
+        like_count: 0,
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action and Assert
+      await expect(commentRepositoryPostgres.updateCommentLikeCountById('comment-123', -1)).rejects.toThrowError(InvariantError);
+    });
+  });
+
   describe('getCommentById', () => {
     it('should return comment detail correctly', async () => {
       // Arrange
@@ -124,6 +195,7 @@ describe('CommentRepositoryPostgres', () => {
         thread_id: 'thread-123',
         username: 'dicoding',
         content: 'dicoding comment',
+        like_count: 0,
         created_at: expect.any(Object),
       }));
     });

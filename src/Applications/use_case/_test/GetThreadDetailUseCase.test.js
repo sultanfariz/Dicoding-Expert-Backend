@@ -28,6 +28,7 @@ describe('GetThreadDetailUseCase', () => {
           content: 'content',
           created_at: expect.any(Date),
           username: 'username',
+          like_count: 0,
           replies: [
             new ReplyDetail({
               id: 'reply-123',
@@ -63,6 +64,7 @@ describe('GetThreadDetailUseCase', () => {
           username: 'username',
           content: 'content',
           thread_id: 'thread-123',
+          like_count: 0,
           created_at: expect.any(Date),
           deleted_at: null,
         })
@@ -117,6 +119,7 @@ describe('GetThreadDetailUseCase', () => {
           content: 'content1',
           created_at: new Date("2020-01-04T00:00:00.000Z"),
           username: 'username1',
+          like_count: 0,
           replies: [],
         }),
         new CommentDetail({
@@ -124,6 +127,7 @@ describe('GetThreadDetailUseCase', () => {
           content: 'content2',
           created_at: new Date("2020-01-10T00:00:00.000Z"),
           username: 'username2',
+          like_count: 0,
           replies: [],
         }),
       ],
@@ -156,6 +160,7 @@ describe('GetThreadDetailUseCase', () => {
           thread_id: 'thread-123',
           created_at: new Date("2020-01-10T00:00:00.000Z"),
           deleted_at: null,
+          like_count: 0,
           replies: [],
         }),
         new CommentDetail({
@@ -165,6 +170,7 @@ describe('GetThreadDetailUseCase', () => {
           thread_id: 'thread-123',
           created_at: new Date("2020-01-04T00:00:00.000Z"),
           deleted_at: null,
+          like_count: 0,
           replies: [],
         }),
       ];
@@ -209,6 +215,7 @@ describe('GetThreadDetailUseCase', () => {
           content: 'content1',
           created_at: new Date("2020-01-04T00:00:00.000Z"),
           username: 'username1',
+          like_count: 0,
           replies: [
             new ReplyDetail({
               id: 'reply-123',
@@ -254,6 +261,7 @@ describe('GetThreadDetailUseCase', () => {
           thread_id: 'thread-123',
           created_at: new Date("2020-01-04T00:00:00.000Z"),
           deleted_at: null,
+          like_count: 0,
           replies: []
         }),
       ];
